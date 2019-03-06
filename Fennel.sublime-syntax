@@ -29,7 +29,7 @@ contexts:
         4: constant.language
 
     # Keywords are if, else for and while.
-    - match: '(\()(fn|for|var|set|lambda|partial|match|global|do|local|let|while|if|else|each)'
+    - match: '(\()(fn |for |var |set |lambda |partial |match |global |do |local |let |while |if |else |each )'
       push: brackets
       captures: 
         1: punctuation.separator
