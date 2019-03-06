@@ -1,0 +1,82 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+name: Fennel
+file_extensions:
+  - fnl
+scope: source
+contexts:
+  main:
+    # Comments begin with a ';' and finish at the end of the line
+    - match: ';'
+      scope: punctuation.definition.comment
+      push: line_comment
+
+    # usage of functions (too messy, too many colors)
+    #- match: (\()[\t ]?+(?!(fn\[|fn |for |var |set |lambda |partial |match |global |do |local |let |\/))([A-Za-z0-9_\-\/\.]+)
+    #  push: brackets
+    #  captures:
+    #    1: punctuation.separator
+    #    3: variable.function
+
+    # function definitions
+    - match: (\()(fn) ([A-Za-z0-9_\-\/]+)[\t ]?+\[(.+?)(?=\])
+      push: brackets
+      captures:
+        1: punctuation.separator
+        2: keyword.control  
+        3: variable.function
+        4: constant.language
+
+    # Keywords are if, else for and while.
+    - match: '(\()(fn|for|var|set|lambda|partial|match|global|do|local|let|while|if|else|each)'
+      push: brackets
+      captures: 
+        1: punctuation.separator
+        2: keyword.control
+
+    # arithmetic operators
+    - match: (\()[ \t]?(\+|\-|\*|\/|\=)
+      push: brackets
+      captures:
+        1: punctuation.separator
+        2: keyword.operator
+
+    # strings\w+
+    - match: (["'])(?:(?=(\\?))\2.)*?\1
+      scope: string.quoted.double
+
+    # Numbers
+    - match: \-?[0-9]\.?[0-9]?
+      scope: constant.numeric
+
+    # brackets
+    - match: \(
+      push: brackets
+      scope: punctuation.separator
+    - match: \)
+      scope: invalid.illegal.stray-bracket-end
+
+    # curly brackets
+    - match: \}|\{
+      scope: punctuation.separator
+
+    - match: '\:[A-Za-z0-9_\-\/\.]+'
+      scope: keyword
+
+  line_comment:
+    - meta_scope: comment.line
+    - match: $
+      pop: true
+
+  brackets:
+    - match: \)
+      scope: punctuation.separator
+      pop: true
+    - include: main
+
+  function_names:
+    - match: \)
+      scope: punctuation.separator
+      pop: true
+    - include: main
